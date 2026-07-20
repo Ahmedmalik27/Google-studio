@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://whalessolution.com/sitemap.xml

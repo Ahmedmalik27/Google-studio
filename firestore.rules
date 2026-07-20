@@ -1,0 +1,61 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isSignedIn() { return request.auth != null; }
+    function isAdmin() { 
+      return isSignedIn() && (
+        (request.auth.token.email == "pkbazaar26@gmail.com") ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+    function isValidId(id) { return id is string && id.size() <= 256 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    
+    function isValidBlog(data) {
+      return data.title is string && data.title.size() <= 200 &&
+             data.slug is string && data.slug.size() <= 200 &&
+             data.content is string && data.content.size() <= 100000 &&
+             data.status in ['draft', 'published'] &&
+             data.authorId is string &&
+             data.authorName is string;
+    }
+
+    function isValidProject(data) {
+      return data.title is string && data.title.size() <= 200 &&
+             data.client is string && data.client.size() <= 200 &&
+             data.category is string && data.category.size() <= 200 &&
+             data.description is string && data.description.size() <= 5000 &&
+             data.tags is list;
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Projects collection
+    match /projects/{projectId} {
+      allow read: if true; // Projects are public portfolio pieces
+      allow write: if isAdmin() && isValidProject(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    // Blogs collection
+    match /blogs/{blogId} {
+      // Anyone can read published posts. Admins can read everything.
+      allow read: if (resource.data.status == 'published') || isAdmin();
+      
+      allow create: if isAdmin() && isValidBlog(request.resource.data) && 
+                      request.resource.data.authorId == request.auth.uid;
+      allow update: if isAdmin() && isValidBlog(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    // Admins collection (Public read for security check, only write by system/admin)
+    match /admins/{adminId} {
+      allow read: if isSignedIn() && request.auth.uid == adminId;
+      allow write: if false; // Managed manually or through server-side logic
+    }
+  }
+}

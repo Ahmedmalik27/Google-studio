@@ -1,0 +1,6 @@
+{
+  "name": "Whales Solution",
+  "description": "Enterprise Digital Solutions featuring a custom high-performance CMS, premium software development, and UI/UX design.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

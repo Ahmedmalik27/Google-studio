@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "Blog": {
+      "title": "Blog Post",
+      "description": "A single blog post entry.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "The title of the post." },
+        "slug": { "type": "string", "description": "URL friendly identifier." },
+        "content": { "type": "string", "description": "The full blog content." },
+        "excerpt": { "type": "string", "description": "Short summary for listings." },
+        "authorId": { "type": "string", "description": "UID of the author." },
+        "authorName": { "type": "string", "description": "Display name of the author." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp." },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last update timestamp." },
+        "status": { "type": "string", "enum": ["draft", "published"], "description": "Publication status." },
+        "coverImage": { "type": "string", "description": "URL to the featured image." },
+        "metaTitle": { "type": "string", "description": "SEO Title." },
+        "metaDescription": { "type": "string", "description": "SEO Description." },
+        "tags": { "type": "array", "description": "List of tags." }
+      },
+      "required": ["title", "slug", "content", "authorId", "createdAt", "status"]
+    },
+    "Admin": {
+      "title": "Admin User",
+      "description": "A user with administrative privileges.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "description": "Admin email address." },
+        "role": { "type": "string", "enum": ["admin"], "description": "User role." }
+      },
+      "required": ["email", "role"]
+    },
+    "Project": {
+      "title": "Portfolio Project",
+      "description": "A single project in the portfolio.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Project title." },
+        "client": { "type": "string", "description": "Client name or website identifier." },
+        "category": { "type": "string", "description": "Project category." },
+        "description": { "type": "string", "description": "Full project details." },
+        "image": { "type": "string", "description": "URL to project preview image." },
+        "tags": { "type": "array", "description": "Technological tags used." },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "client", "category", "description", "image"]
+    }
+  },
+  "firestore": {
+    "blogs": {
+      "schema": "Blog",
+      "description": "Collection of all blog posts."
+    },
+    "projects": {
+      "schema": "Project",
+      "description": "Collection of portfolio projects."
+    },
+    "admins": {
+      "schema": "Admin",
+      "description": "Collection of authorized admin users."
+    }
+  }
+}
